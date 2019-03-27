@@ -38,7 +38,7 @@ class ApibParser
                     $content .= "{$route->summary}\n\n";
 
                     foreach ($route->items as $key => $routeItem) {
-                        $requestName = count($route->items) === 0
+                        $requestName = count($route->items) === 1
                             ? ''
                             : " #{$key}";
 
