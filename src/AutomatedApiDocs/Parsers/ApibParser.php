@@ -1,6 +1,6 @@
 <?php
 
-namespace OwowAgency\AutomatedApiDocs\Parsers;
+namespace OwowAgency\AutomatedApiDoc\Parsers;
 
 class ApibParser
 {

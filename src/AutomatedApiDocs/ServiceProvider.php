@@ -1,9 +1,9 @@
 <?php 
 
-namespace OwowAgency\AutomatedApiDocs;
+namespace OwowAgency\AutomatedApiDoc;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use OwowAgency\AutomatedApiDocs\Commands\GenerateApiDocumentation;
+use OwowAgency\AutomatedApiDoc\Commands\GenerateApiDocumentation;
 
 class ServiceProvider extends BaseServiceProvider
 {

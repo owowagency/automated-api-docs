@@ -1,9 +1,9 @@
 <?php
 
-namespace OwowAgency\AutomatedApiDocs\Commands;
+namespace OwowAgency\AutomatedApiDoc\Commands;
 
 use Illuminate\Console\Command;
-use OwowAgency\AutomatedApiDocs\Parsers\ApibParser;
+use OwowAgency\AutomatedApiDoc\Parsers\ApibParser;
 
 class GenerateApiDocumentation extends Command
 {

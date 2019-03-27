@@ -23,7 +23,7 @@
     },
     "autoload": {
        "psr-4": {
-            "OwowAgency\\AutomatedApiDocs\\": "src/Package"
+            "OwowAgency\\AutomatedApiDocs\\": "src/AutomatedApiDocs"
         }
     },
     "autoload-dev": {
