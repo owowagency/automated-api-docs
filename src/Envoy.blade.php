@@ -3,7 +3,11 @@
 @task('documentation')
     composer install --no-interaction --prefer-dist --optimize-autoloader --quiet
 
+    php artisan config:clear
+
     vendor/bin/phpunit --no-coverage > /dev/null 2>&1
+
+    php artisan config:cache
 
     php artisan api:docs
 
