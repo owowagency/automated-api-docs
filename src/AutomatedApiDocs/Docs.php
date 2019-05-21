@@ -1,6 +1,6 @@
 <?php
 
-namespace OwowAgency\AutomatedApiDoc;
+namespace OwowAgency\AutomatedApiDocs;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Validation\ValidationException;

@@ -1,16 +1,15 @@
 <?php
 
-namespace OwowAgency\AutomatedApiDoc;
+namespace OwowAgency\AutomatedApiDocs;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
-use OwowAgency\AutomatedApiDoc\Parsers\ApibParser;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 trait DocsGenerator
 {
     /**
-     * @var \OwowAgency\AutomatedApiDoc\Docs
+     * @var \OwowAgency\AutomatedApiDocs\Docs
      */
     protected static $docs;
 

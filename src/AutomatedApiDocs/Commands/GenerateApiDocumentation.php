@@ -1,9 +1,9 @@
 <?php
 
-namespace OwowAgency\AutomatedApiDoc\Commands;
+namespace OwowAgency\AutomatedApiDocs\Commands;
 
 use Illuminate\Console\Command;
-use OwowAgency\AutomatedApiDoc\Parsers\ApibParser;
+use OwowAgency\AutomatedApiDocs\Parsers\Parser;
 
 class GenerateApiDocumentation extends Command
 {
@@ -12,7 +12,7 @@ class GenerateApiDocumentation extends Command
      *
      * @var string
      */
-    protected $signature = 'documentation:generate';
+    protected $signature = 'api:docs';
 
     /**
      * The console command description.
@@ -22,9 +22,11 @@ class GenerateApiDocumentation extends Command
     protected $description = 'Generates the API Documentation from the JSON file.';
 
     /**
-     * @var ApibParser
+     * The list of all parsers.
+     *
+     * @var \OwowAgency\AutomatedApiDocs\Parsers\Parser[]
      */
-    private $parser;
+    private $parsers;
 
     /**
      * Create a new command instance.
@@ -35,7 +37,27 @@ class GenerateApiDocumentation extends Command
     {
         parent::__construct();
 
-        $this->parser = new ApibParser(config('automated-api-docs'));
+        $this->initializeParsers();
+    }
+
+    /**
+     * Get all parsers from the configuration and initialize the classes.
+     *
+     * @return void
+     */
+    protected function initializeParsers()
+    {
+        $config = config('automated-api-docs');
+
+        $parsers = config('automated-api-docs.parsers');
+
+        foreach ($parsers as $class) {
+            $parser = new $class($config);
+
+            if ($parser instanceof Parser) {
+                $this->parsers[] = $parser;
+            }
+        }
     }
 
     /**
@@ -47,7 +69,11 @@ class GenerateApiDocumentation extends Command
     {
         $file = config('automated-api-docs.temporary_path');
 
-        $this->parser->handle(file_get_contents($file));
+        $collections = json_decode(file_get_contents($file));
+
+        foreach ($this->parsers as $parser) {
+            $parser->handle($collections);
+        }
 
         unlink($file);
     }
