@@ -5,7 +5,7 @@
 
     # vendor/bin/phpunit --no-coverage > /dev/null 2>&1
 
-    php artisan documentation:generate
+    php artisan api:docs
 
     @if (! $keepDev)
         # composer install --no-interaction --prefer-dist --optimize-autoloader --quiet --no-dev
