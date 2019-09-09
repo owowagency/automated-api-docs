@@ -144,7 +144,13 @@ class Docs implements Arrayable
             $name = strtolower($parameter->getName());
 
             if (str_contains($name, 'request')) {
-                $requestName = $parameter->getType()->getName();
+                $requestType = $parameter->getType();
+
+                if (is_null($requestType))  {
+                    continue;
+                }
+
+                $requestName = $requestType->getName();
 
                 try {
                     $formRequest = app($requestName);
