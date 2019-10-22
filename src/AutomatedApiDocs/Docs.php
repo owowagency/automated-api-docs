@@ -2,6 +2,7 @@
 
 namespace OwowAgency\AutomatedApiDocs;
 
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Validation\ValidationException;
 
@@ -143,7 +144,7 @@ class Docs implements Arrayable
         foreach ($method->getParameters() as $parameter) {
             $name = strtolower($parameter->getName());
 
-            if (str_contains($name, 'request')) {
+            if (Str::contains($name, 'request')) {
                 $requestType = $parameter->getType();
 
                 if (is_null($requestType))  {
@@ -206,7 +207,7 @@ class Docs implements Arrayable
             if (count($matches) >= 2) {
                 $docs = $matches[1];
 
-                if (! str_contains($docs, ['@param', '@return', '@throws'])) {
+                if (! Str::contains($docs, ['@param', '@return', '@throws'])) {
                     $description .= $docs . ' ';
                 }
             }
