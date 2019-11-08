@@ -75,9 +75,25 @@ trait DocsGenerator
             $response = $this->followRedirects($response);
         }
 
+        // Contstruct the body according to the method and content type. The
+        // body should be the content when the client has specified it had send
+        // json.
+        $body = [];
+
+        if (! in_array($method, ['GET', 'HEAD'])) {
+            if (
+                ! is_null($content)
+                && $server['CONTENT_TYPE'] === 'application/json'
+            ) {
+                $body = json_decode($content);
+            } else {
+                $body = $parameters;
+            }
+        }
+
         // The only difference from the parent call method. We need this to
         // actually monitor the call.
-        static::$docs->monitorCall($parameters, $request, $response);
+        static::$docs->monitorCall($body, $request, $response);
 
         $kernel->terminate($request, $response);
 
