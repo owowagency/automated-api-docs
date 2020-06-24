@@ -27,6 +27,10 @@ class Docs implements Arrayable
     {
         $route = $request->route();
 
+        if (is_null($route)) {
+            return;
+        }
+
         $controllerMethod = $this->getReflectionMethodFromController($route);
 
         $uri = $route->uri();
