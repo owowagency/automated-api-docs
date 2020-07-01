@@ -49,7 +49,7 @@ class GenerateApiDocumentation extends Command
     {
         $config = config('automated-api-docs');
 
-        $parsers = config('automated-api-docs.parsers');
+        $parsers = config('automated-api-docs.parsers', []);
 
         foreach ($parsers as $class) {
             $parser = new $class($config);
@@ -67,6 +67,10 @@ class GenerateApiDocumentation extends Command
      */
     public function handle()
     {
+        if (count($this->parsers) === 0) {
+            return $this->warn('No parsers are set in the "automated-api-docs.parsers" config.');
+        }
+
         $file = config('automated-api-docs.temporary_path');
 
         $collections = json_decode(file_get_contents($file));
