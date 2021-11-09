@@ -26,6 +26,7 @@ class Swagger extends Parser
         }
 
         $this->saveContent($this->content);
+        dd();
     }
 
     /**
@@ -67,7 +68,10 @@ class Swagger extends Parser
 
         $this->addRouteParameters($path->route_parameters);
 
+        
         $this->addResponses($route->items);
+
+        $this->addParameters($route->items);
 
         $this->addRequests($route->items);
 
@@ -87,13 +91,40 @@ class Swagger extends Parser
      */
     public function addRouteParameters(array $parameters): void
     {
+        $this->addLines(6, 'parameters:');
         foreach ($parameters as $parameter) {
-            $this->addLines(6, 'parameters:');
             $this->addLines(8, '- name: '.$parameter);
             $this->addLines(10, 'in: path');
             $this->addLines(10, 'required: true');
             $this->addLines(10, 'schema:');
             $this->addLines(12, 'type: '. gettype($parameter));
+        }
+    }
+
+    /**
+     * Add parameters to content
+     */
+    public function addParameters(array $items): void
+    {
+        
+        $this->addLines(6, 'parameters:');
+        foreach ($items as $item) {
+            foreach ($item->request_parameters as $key => $parameter) {
+                if($key == 'filter') {
+                    foreach ($parameter as $key => $value) {
+                        dump($key);
+                        $this->addLines(8, '- name: filter['.$key.']');
+                        $this->addLines(10, 'in: query');
+                        $this->addLines(10, 'schema:');
+                        $this->addLines(12, Yaml::dump((array) $this->arrayToTypeExample($value)));
+                    }
+                } else {
+                    $this->addLines(8, '- name: '.$key);
+                    $this->addLines(10, 'in: query');
+                    $this->addLines(10, 'schema:');
+                    $this->addLines(12, Yaml::dump((array) $this->arrayToTypeExample($item->request_parameters)));
+                }
+            }
         }
     }
 
@@ -144,32 +175,39 @@ class Swagger extends Parser
     /**
      * Convert array to openAPI array
      */
-    public function arrayToTypeExample(array|object $array): array
+    public function arrayToTypeExample(string|array|object $array): array
     {
         $newArray = [];
 
-        foreach ($array as $key => $value) {
-            if(is_array($value)) {
-                if(!empty($value)) {
+        if(is_string($array)) {
+            $newArray = [
+                'type' => 'string',
+                'example' => $array
+            ];
+        } else {
+            foreach ($array as $key => $value) {
+                if(is_array($value)) {
+                    if(!empty($value)) {
+                        $newArray[$key] = [
+                            'type' => 'array',
+                            'items' => [
+                                'allOf' => $this->arrayToTypeExample($value)
+                            ]
+                        ];
+                    }
+                } elseif(is_object($value)) {
                     $newArray[$key] = [
-                        'type' => 'array',
-                        'items' => [
-                            'allOf' => $this->arrayToTypeExample($value)
-                        ]
+                        'type' => 'object',
+                        'properties' => $this->arrayToTypeExample($value)
+                    ];
+                } else {
+                    $newArray[$key] = [
+                        'type' => gettype($value),
+                        'example' => is_array($array) ? $this->arrayToTypeExample($value) : $value
                     ];
                 }
-            } elseif(is_object($value)) {
-                $newArray[$key] = [
-                    'type' => 'object',
-                    'properties' => $this->arrayToTypeExample($value)
-                ];
-            } else {
-                $newArray[$key] = [
-                    'type' => gettype($value),
-                    'example' => is_array($array) ? $this->arrayToTypeExample($value) : $value
-                ];
             }
-        }
+        }   
 
         return $newArray;
     }

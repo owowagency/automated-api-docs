@@ -42,12 +42,14 @@ class Docs implements Arrayable
         $routeParametersKey = sprintf('%s.paths.%s.route_parameters', $collectionName, $uri);
         $docKey = sprintf('%s.paths.%s.routes.%s.summary', $collectionName, $uri, $method);
         $requestBodyKey = sprintf('%s.paths.%s.routes.%s.items.%s.request_body', $collectionName, $uri, $method, $httpCode);
+        $requestParametersKey = sprintf('%s.paths.%s.routes.%s.items.%s.request_parameters', $collectionName, $uri, $method, $httpCode);
         $requestRulesKey = sprintf('%s.paths.%s.routes.%s.items.%s.request_rules', $collectionName, $uri, $method, $httpCode);
         $responseBodyKey = sprintf('%s.paths.%s.routes.%s.items.%s.response_body', $collectionName, $uri, $method, $httpCode);
 
         data_set($this->collections, $routeParametersKey, $route->parameterNames());
         data_set($this->collections, $docKey, $this->getDescriptionFromDocs($controllerMethod->getDocComment()));
         data_set($this->collections, $requestBodyKey, $parameters);
+        data_set($this->collections, $requestParametersKey, $request->query());
         data_set($this->collections, $requestRulesKey, $this->getRulesFromRequest($controllerMethod));
         data_set($this->collections, $responseBodyKey, json_decode($response->getContent(), true));
     }
@@ -129,6 +131,7 @@ class Docs implements Arrayable
             $routeItems[] = [
                 'code' => $code,
                 'request_body' => $routeItem['request_body'] ?? null,
+                'request_parameters' => $routeItem['request_parameters'] ?? null,
                 'request_rules' => $routeItem['request_rules'] ?? null,
                 'response_body' => $routeItem['response_body'] ?? [],
             ];
